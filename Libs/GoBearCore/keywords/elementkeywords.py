@@ -37,27 +37,32 @@ class ElementKeywords(LibraryComponent):
     def get_elements_by_attribute(self, attribute, value, tag='*'):
         return self.SEKeywords.find_elements("//" + tag + "[@" + attribute + "='" + value + "']")
 
-    def get_element_by_tag(self, element, tag):
+    def get_elements_by_tag(self, element, tag):
         return self.find_element(element).find_elements_by_tag_name(tag)
 
     def select_element_by_tag(self, element, tag, value):
-        for e in self.get_element_by_tag(element, tag):
+        for e in self.get_elements_by_tag(element, tag):
             if value in e.get_textContent():
                 e.click()
                 return
         message = "Element '%s = %s' not found!" % (tag, value)
         raise AssertionError(message)
 
-    def is_contain_class(self, class_name, locator=None):
-        # return class_name in self.find_element(locator).get_attribute('class')
+    def is_contain_class(self, locator, class_name):
+        return class_name in self.find_element(locator).get_attribute('class')
+
+    def is_element_contain_class(self, class_name, element=None):
+        return class_name in element.get_attribute('class')
+
+    def is_child_element_contain_class(self, class_name, element=None):
         try:
-            self.get_element_by_class(class_name, locator)
+            self.get_element_by_class(class_name, element)
             return True
         except:
             return False
 
-    def get_element_by_class(self, class_name, locator=None):
-        return self.find_element("//*[contains(@class='"+class_name+"']", None, None, locator)
+    def get_element_by_class(self, class_name, element=None):
+        return self.find_element("//*[contains(@class, '"+class_name+"')]", None, None, element)
 
     def get_element_by_href(self, value):
         return self.get_element_by_attribute("href", value, tag='a')

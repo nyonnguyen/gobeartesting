@@ -1,15 +1,25 @@
 from SeleniumLibrary.base import keyword, LibraryComponent
 from SeleniumLibrary.keywords import WaitingKeywords
 from .elementkeywords import ElementKeywords
-from ..utilities import Utilities as ufnc
-
+from ..utilities import Utilities as GBUtilies
+import time
 
 __version__ = '1.0.0'
 
 GB_ATTRIBUTE_NAME = 'data-gb-name'
 GB_LOADING = 'gb-name=loading-status'
 BG_DROPDOWN_MENU_OPEN = 'dropdown-menu open'
+
 GB_DATE_PICKER_MENU_CLASS = 'datepicker datepicker-dropdown dropdown-menu datepicker-orient-left datepicker-orient-top'
+GB_DATE_PICKER_DAYS_CLASS = 'datepicker-days'
+GB_DATE_PICKER_MONTHS_CLASS = 'datepicker-months'
+GB_DATE_PICKER_YEARS_CLASS = 'datepicker-years'
+GB_DATE_PICKER_DECADES_CLASS = 'datepicker-decades'
+GB_DATE_PICKER_CENTURIES_CLASS = 'datepicker-centuries'
+GB_DATE_PICKER_SWITCH_CLASS = 'datepicker-switch'
+GB_DATE_PICKER_NEXT_CLASS = 'next'
+GB_DATE_PICKER_PREV_CLASS = 'prev'
+
 
 
 class GoBearCoreKeywords(LibraryComponent):
@@ -23,7 +33,7 @@ class GoBearCoreKeywords(LibraryComponent):
     #     self.elementKeys.js_click(element)
 
     def get_element(self, locator, tag=None):
-        _locator = ufnc.extract_locator(locator)
+        _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
             return self.elementKeys.get_element_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
         if 'href' in _locator[0].lower():
@@ -32,7 +42,7 @@ class GoBearCoreKeywords(LibraryComponent):
             return self.elementKeys.find_element(locator, tag)
 
     def get_elements(self, locator, tag=None):
-        _locator = ufnc.extract_locator(locator)
+        _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
             return self.elementKeys.get_element_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
         else:
@@ -82,7 +92,7 @@ class GoBearCoreKeywords(LibraryComponent):
 
     @keyword
     def tab_should_be_active(self, locator):
-        if not self.elementKeys.is_contain_class('active', locator):
+        if not self.elementKeys.is_contain_class(locator, 'active'):
             raise AssertionError("Tab %s is not active" % locator)
 
     @keyword
@@ -90,7 +100,7 @@ class GoBearCoreKeywords(LibraryComponent):
         self.wait_until_element_is_visible(locator)
         control = self.get_element(locator)
         # show dropdown list
-        self.elementKeys.get_element_by_tag(control, 'button')[0].click()
+        self.elementKeys.get_elements_by_tag(control, 'button')[0].click()
         self.wait_until_dropdown_menu_visible(control)
         # options are in 'li' tags
         self.elementKeys.select_element_by_tag(control, 'li', value)
@@ -100,33 +110,95 @@ class GoBearCoreKeywords(LibraryComponent):
         Check if the dropdown menu of BG Dropdown Button is visible
         :param element:
         """
-        try:
-            self.find_element("//*[@class='"+BG_DROPDOWN_MENU_OPEN+"']", None, None, element)
-            return True
-        except:
-            return False
-        # return self.elementKeys.is_contain_class(element, BG_DROPDOWN_MENU_OPEN)
+        return self.elementKeys.is_child_element_contain_class(BG_DROPDOWN_MENU_OPEN, element)
 
     def wait_until_dropdown_menu_visible(self, control, timeout=None, error=None):
-        self.waiting_management._wait_until(
-            lambda: self.is_dropdown_menu_visible(control) == True,
-            "No dropdown menu is visible <TIMEOUT>",
-            timeout,
-            error
-        )
+        # constant wait time works better than dynamic function
+        # TODO: Need to debug and fix
+        time.sleep(0.25)
+        # self.waiting_management._wait_until(
+        #     lambda: self.is_dropdown_menu_visible(control) == True,
+        #     "No dropdown menu is visible <TIMEOUT>",
+        #     timeout,
+        #     error
+        # )
 
     @keyword
     def set_date(self, locator, value):
+        """
+        Set date values for date picker
+        Support input value in format: dd-mm-yyy or dd/mm/yyy or dd.mm.yyy
+        Where 'mm' is month in WORD (ex: April)
+        :param locator:
+        :param value:
+        """
+        dates = GBUtilies.split(value, ['/', ' ', '.', '-'])
+        day = dates[0]
+        month = dates[1]
+        year = dates[2]
+
         # popup date picker
         self.elementKeys.find_element(locator).click()
         self.wait_until_data_picker_popup()
-        print(self.get_date_picker_popup())
+
+        # get date picker
+        date_picker = self.get_date_picker_popup()
+
+        # check if date picker is Days mode
+        if self.is_date_picker_days():
+            # get days popup
+            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_DAYS_CLASS, date_picker)
+            datepicker_switch = self.get_date_picker_switch_values(date_picker)
+            current_month = datepicker_switch[0]
+            current_year = datepicker_switch[1]
+            if current_month == month and current_year == year:
+                self.select_datepicker_day(date_picker, day)
+
+        if self.is_date_picker_months():
+            # get month popup
+            self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS, date_picker)
+
+        if self.is_date_picker_years():
+            # get years popup
+            self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS, date_picker)
+
+    def select_datepicker_day(self, datepicker, day):
+        days = self.elementKeys.find_elements("//tbody//td", None, datepicker)
+        available_days = [d for d in days if not self.elementKeys.is_element_contain_class('disabled', d)]
+        for d in available_days:
+            if d.get_textContent() == day:
+                d.click()
+                return
+        message = "Cannot select day %s" % day
+        raise AssertionError(message)
+
+    def get_date_picker_switch_values(self, datepicker):
+        datepicker_switch = self.elementKeys.get_element_by_class(GB_DATE_PICKER_SWITCH_CLASS, datepicker)
+        return datepicker_switch.get_textContent().split()
+
+    def is_date_picker_days(self):
+        try:
+            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_DAYS_CLASS).is_displayed()
+        except:
+            return False
+
+    def is_date_picker_months(self):
+        try:
+            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS).is_displayed()
+        except:
+            return False
+
+    def is_date_picker_years(self):
+        try:
+            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS).is_displayed()
+        except:
+            return False
 
     def get_date_picker_popup(self):
         return self.elementKeys.get_element_by_class(GB_DATE_PICKER_MENU_CLASS)
 
     def is_date_picker_popup(self):
-        return self.elementKeys.is_contain_class(self.driver, GB_DATE_PICKER_MENU_CLASS)
+        return self.elementKeys.is_child_element_contain_class(GB_DATE_PICKER_MENU_CLASS)
 
     def wait_until_data_picker_popup(self, timeout=None, error=None):
         self.waiting_management._wait_until(
