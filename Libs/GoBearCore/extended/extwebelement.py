@@ -40,4 +40,4 @@ class ExtWebElement(WebElement):
         return class_name in self.get_attribute('class')
 
     def get_element_by_class(self, class_name):
-        return ExtWebElement(self.find_element("//*[@class="+class_name+"]"))
+        return ExtWebElement(self.find_element_by_xpath("//*[@class='"+class_name+"']"))

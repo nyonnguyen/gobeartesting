@@ -29,9 +29,6 @@ class GoBearCoreKeywords(LibraryComponent):
         self.elementKeys = ElementKeywords(ctx)
         self.waiting_management = WaitingKeywords(ctx)
 
-    # def click(self, element):
-    #     self.elementKeys.js_click(element)
-
     def get_element(self, locator, tag=None):
         _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
@@ -68,11 +65,6 @@ class GoBearCoreKeywords(LibraryComponent):
             timeout,
             error
         )
-
-    # @keyword
-    # def wait_until_gb_element_visible(self, locator):
-    #     gb_element = self.get_element(locator)
-    #     self.waiting_management.wait_until_element_is_visible(gb_element)
 
     def is_element_visible(self, locator):
         try:
@@ -143,39 +135,88 @@ class GoBearCoreKeywords(LibraryComponent):
 
         # get date picker
         date_picker = self.get_date_picker_popup()
+        # get date picker values
+        datepicker_switch_value = self.get_date_picker_switch_values(date_picker)
+        current_month = datepicker_switch_value['month'] or None
+        current_year = datepicker_switch_value['year'] or None
 
         # check if date picker is Days mode
         if self.is_date_picker_days():
-            # get days popup
-            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_DAYS_CLASS, date_picker)
-            datepicker_switch = self.get_date_picker_switch_values(date_picker)
-            current_month = datepicker_switch['month']
-            current_year = datepicker_switch['year']
-            if current_month == month and current_year == year:
-                self.select_datepicker_day(date_picker, day)
+            _position = 0
+            if current_year != year:
+                self.select_datepicker_year_at(date_picker, None, None, year, _position)
+            elif current_month != month:
+                self.select_datepicker_month_at(date_picker, None, month, None, _position)
+            else:
+                # current_month == month and current_year == year
+                self.select_datepicker_day_at(date_picker, day, None, None, _position)
 
         if self.is_date_picker_months():
+            _position = 1
             # get month popup
-            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS, date_picker)
-            date_picker.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS)
+            current_date_picker = date_picker.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS)
 
         if self.is_date_picker_years():
+            _position = 2
             # get years popup
-            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS, date_picker)
-            date_picker.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS)
+            current_date_picker = date_picker.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS)
 
-    def select_datepicker_day(self, datepicker, day):
-        days = datepicker.find_elements_by_xpath("//tbody//td")
-        available_days = [d for d in days if not self.elementKeys.is_element_contain_class('disabled', d)]
-        for d in available_days:
-            if d.get_textContent() == day:
-                d.click()
+    def select_datepicker_year_at(self, datepicker, day, month, year, position=2):
+        """
+        Select value for Year Date Picker
+        :param datepicker:
+        :param year:
+        :param position: integer number | is where datepicker at
+        0: for days, 1: for month, 2: for year
+        """
+        if position == 0:
+            # at Day => click twice on switch
+            self.click_date_picker_switch(2)
+        if position == 1:
+            # at Month => click once on switch
+            self.click_date_picker_switch(1)
+        self.select_datepicker_value(datepicker, GB_DATE_PICKER_YEARS_CLASS, year)
+
+    def select_datepicker_month_at(self, date_picker, day, month, year, position=1):
+        if position == 0:
+            # at Day => click once on switch
+            self.click_date_picker_switch(1)
+        if position == 2:
+            # at Year => select Year
+            self.select_datepicker_value(year)
+        self.select_datepicker_value(date_picker, GB_DATE_PICKER_MONTHS_CLASS, month)
+
+    def select_datepicker_day_at(self, datepicker, day, month, year, position=0):
+        if position == 1:
+            # at Month => select Month
+            self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, month)
+        if position == 2:
+            # at Year, select Year then Month
+            self.select_datepicker_value(datepicker, GB_DATE_PICKER_YEARS_CLASS, year)
+            self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, month)
+        self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, day)
+
+    def select_datepicker_value(self, datepicker, picker_class, value):
+        current_date_picker = datepicker.find_ealement_by_class(picker_class)
+        values = current_date_picker.find_elements_by_xpath("//tbody//td")
+        available_values = [v for v in values if not self.elementKeys.is_element_contain_class('disabled', v)]
+        for v in available_values:
+            if v.get_textContent() == value:
+                v.click()
                 return
-        message = "Cannot select day %s" % day
+        message = "Cannot select value %s" % value
         raise AssertionError(message)
 
+    def click_date_picker_switch(self, times=1):
+        for i in range(0, times):
+            self.get_date_picker_switch().click()
+            time.sleep(0.25)
+
+    def get_date_picker_switch(self):
+        return self.elementKeys.find_element_by_class(GB_DATE_PICKER_SWITCH_CLASS)
+
     def get_date_picker_switch_values(self, datepicker):
-        datepicker_switch = self.elementKeys.find_element_by_class(GB_DATE_PICKER_SWITCH_CLASS)
+        datepicker_switch = self.get_date_picker_switch()
         _raw = datepicker_switch.get_textContent()
         if ' ' in _raw:
             values = _raw.split(' ')

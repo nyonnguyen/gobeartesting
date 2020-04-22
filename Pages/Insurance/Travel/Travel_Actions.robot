@@ -27,7 +27,7 @@ Set Travel Start Date
 
 Set Travel End Date
     [Arguments]  ${enddate}
-    Input Text  ${TRAVEL_ENDDATE}  ${enddate}
+    Set Date  ${TRAVEL_ENDDATE}  ${enddate}
 
 Click Travel Show Result Button
     Select Element  ${TRAVEL_SHOW_RESULT_BUTTON}
