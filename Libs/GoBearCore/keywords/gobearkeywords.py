@@ -226,7 +226,7 @@ class GoBearCoreKeywords(LibraryComponent):
             picker_class = GB_DATE_PICKER_MONTHS_CLASS
         else:
             picker_class = GB_DATE_PICKER_YEARS_CLASS
-        current_picker = self.elementKeys.find_element_by_class(GB_DATE_PICKER_MONTHS_CLASS)
+        current_picker = self.elementKeys.find_element_by_class(picker_class)
         return current_picker.get_element_by_class(GB_DATE_PICKER_SWITCH_CLASS)
 
     def get_date_picker_switch_values(self):
