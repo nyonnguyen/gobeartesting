@@ -2,6 +2,7 @@ from SeleniumLibrary.base import keyword, LibraryComponent
 from SeleniumLibrary.keywords import WaitingKeywords
 from .elementkeywords import ElementKeywords
 from ..utilities import Utilities as GBUtilies
+from ..extended import ExtWebElement
 import time
 
 __version__ = '1.0.0'
@@ -21,7 +22,6 @@ GB_DATE_PICKER_NEXT_CLASS = 'next'
 GB_DATE_PICKER_PREV_CLASS = 'prev'
 
 
-
 class GoBearCoreKeywords(LibraryComponent):
 
     def __init__(self, ctx):
@@ -39,14 +39,14 @@ class GoBearCoreKeywords(LibraryComponent):
         if 'href' in _locator[0].lower():
             return self.elementKeys.get_element_by_href(_locator[1])
         else:
-            return self.elementKeys.find_element(locator, tag)
+            return ExtWebElement(self.elementKeys.find_element(locator, tag))
 
     def get_elements(self, locator, tag=None):
         _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
-            return self.elementKeys.get_element_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
+            return self.elementKeys.get_elements_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
         else:
-            return self.elementKeys.find_element(locator, tag)
+            return [ExtWebElement(e) for e in self.elementKeys.find_elements(locator, tag)]
 
     @keyword
     def select_element(self, locator):
@@ -92,7 +92,7 @@ class GoBearCoreKeywords(LibraryComponent):
 
     @keyword
     def tab_should_be_active(self, locator):
-        if not self.elementKeys.is_contain_class(locator, 'active'):
+        if not self.get_element(locator).is_contain_class('active'):
             raise AssertionError("Tab %s is not active" % locator)
 
     @keyword
@@ -100,22 +100,22 @@ class GoBearCoreKeywords(LibraryComponent):
         self.wait_until_element_is_visible(locator)
         control = self.get_element(locator)
         # show dropdown list
-        self.elementKeys.get_elements_by_tag(control, 'button')[0].click()
+        control.get_elements_by_tag('button')[0].click()
         self.wait_until_dropdown_menu_visible(control)
         # options are in 'li' tags
-        self.elementKeys.select_element_by_tag(control, 'li', value)
+        control.select_element_by_tag('li', value)
 
     def is_dropdown_menu_visible(self, element):
         """
         Check if the dropdown menu of BG Dropdown Button is visible
         :param element:
         """
-        return self.elementKeys.is_child_element_contain_class(BG_DROPDOWN_MENU_OPEN, element)
+        return self.elementKeys.is_any_element_contain_class(BG_DROPDOWN_MENU_OPEN, element)
 
     def wait_until_dropdown_menu_visible(self, control, timeout=None, error=None):
         # constant wait time works better than dynamic function
         # TODO: Need to debug and fix
-        time.sleep(0.25)
+        time.sleep(0.5)
         # self.waiting_management._wait_until(
         #     lambda: self.is_dropdown_menu_visible(control) == True,
         #     "No dropdown menu is visible <TIMEOUT>",
@@ -138,7 +138,7 @@ class GoBearCoreKeywords(LibraryComponent):
         year = dates[2]
 
         # popup date picker
-        self.elementKeys.find_element(locator).click()
+        self.get_element(locator).click()
         self.wait_until_data_picker_popup()
 
         # get date picker
@@ -149,21 +149,23 @@ class GoBearCoreKeywords(LibraryComponent):
             # get days popup
             # self.elementKeys.get_element_by_class(GB_DATE_PICKER_DAYS_CLASS, date_picker)
             datepicker_switch = self.get_date_picker_switch_values(date_picker)
-            current_month = datepicker_switch[0]
-            current_year = datepicker_switch[1]
+            current_month = datepicker_switch['month']
+            current_year = datepicker_switch['year']
             if current_month == month and current_year == year:
                 self.select_datepicker_day(date_picker, day)
 
         if self.is_date_picker_months():
             # get month popup
-            self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS, date_picker)
+            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS, date_picker)
+            date_picker.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS)
 
         if self.is_date_picker_years():
             # get years popup
-            self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS, date_picker)
+            # self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS, date_picker)
+            date_picker.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS)
 
     def select_datepicker_day(self, datepicker, day):
-        days = self.elementKeys.find_elements("//tbody//td", None, datepicker)
+        days = datepicker.find_elements_by_xpath("//tbody//td")
         available_days = [d for d in days if not self.elementKeys.is_element_contain_class('disabled', d)]
         for d in available_days:
             if d.get_textContent() == day:
@@ -173,32 +175,40 @@ class GoBearCoreKeywords(LibraryComponent):
         raise AssertionError(message)
 
     def get_date_picker_switch_values(self, datepicker):
-        datepicker_switch = self.elementKeys.get_element_by_class(GB_DATE_PICKER_SWITCH_CLASS, datepicker)
-        return datepicker_switch.get_textContent().split()
+        datepicker_switch = self.elementKeys.find_element_by_class(GB_DATE_PICKER_SWITCH_CLASS)
+        _raw = datepicker_switch.get_textContent()
+        if ' ' in _raw:
+            values = _raw.split(' ')
+            return {'month': values[0], 'year': values[1]}
+        elif '-' in _raw:
+            values = _raw.split('-')
+            return {'start': values[0], 'end': values[1]}
+        else:
+            return {'year': _raw}
 
     def is_date_picker_days(self):
         try:
-            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_DAYS_CLASS).is_displayed()
+            return self.elementKeys.find_element_by_class(GB_DATE_PICKER_DAYS_CLASS).is_displayed()
         except:
             return False
 
     def is_date_picker_months(self):
         try:
-            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS).is_displayed()
+            return self.elementKeys.find_element_by_class(GB_DATE_PICKER_MONTHS_CLASS).is_displayed()
         except:
             return False
 
     def is_date_picker_years(self):
         try:
-            return self.elementKeys.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS).is_displayed()
+            return self.elementKeys.find_element_by_class(GB_DATE_PICKER_YEARS_CLASS).is_displayed()
         except:
             return False
 
     def get_date_picker_popup(self):
-        return self.elementKeys.get_element_by_class(GB_DATE_PICKER_MENU_CLASS)
+        return self.elementKeys.find_element_by_class(GB_DATE_PICKER_MENU_CLASS)
 
     def is_date_picker_popup(self):
-        return self.elementKeys.is_child_element_contain_class(GB_DATE_PICKER_MENU_CLASS)
+        return self.elementKeys.is_any_element_contain_class(GB_DATE_PICKER_MENU_CLASS)
 
     def wait_until_data_picker_popup(self, timeout=None, error=None):
         self.waiting_management._wait_until(
@@ -208,67 +218,3 @@ class GoBearCoreKeywords(LibraryComponent):
             error
         )
 
-    # @keyword
-    # def click_on_product_item(self, locator, product_name, product_price):
-    #     """
-    #     :locator: Locator of the tab container
-    #     :product_name: Displayed name of product
-    #     "product_price: Displayed price of product"
-    #     """
-    #     items = self.get_all_product_in_tab(locator)
-    #     for i in items:
-    #         if self.get_product_name(i) == product_name:
-    #             if self.get_product_price(i) == product_price:
-    #                 self.click(self.get_product_clickable_item(i))
-    #                 return
-    #     message = "Item %s - %s not found in %s!" % (product_name, product_price, locator)
-    #     raise AssertionError(message)
-    #
-    # def get_product_url(self, element):
-    #     return self._get_child_element_by_property(element).get_attribute("href").strip()
-    #
-    # def get_product_clickable_item(self, element):
-    #     return self._get_child_element_by_property(element, "url")
-    #
-    # def get_product_name(self, element):
-    #     return self._get_child_element_by_property(element, "name").get_attribute("textContent").strip()
-    #
-    # def get_product_price(self, element):
-    #     return self._get_child_element_by_property(element, "price").get_attribute("textContent").strip().replace("$","")
-    #
-    # def _get_child_element_by_property(self, locator, property):
-    #     return self.find_element(locator).find_element_by_xpath(".//*[@itemprop='"+property+"']")
-    #
-    # @keyword
-    # def get_alert_div(self):
-    #     return self.driver.find_element_by_xpath("//*[@id='center_column']//*[@class='alert alert-danger']") #get the first element
-    #
-    # @keyword
-    # def is_alert_visible(self):
-    #     try:
-    #         self.get_alert_div()
-    #         return True
-    #     except:
-    #         return False
-    #
-    # @keyword
-    # def wait_until_alert_displayed(self, timeout=None, error=None):
-    #     self.waiting_management._wait_until(
-    #         lambda: self.is_alert_visible() == True,
-    #         "Alert was not appeared in <TIMEOUT>",
-    #         timeout,
-    #         error
-    #     )
-    #
-    # @keyword
-    # def get_login_alert_messages(self):
-    #     alert = self.get_alert_div()
-    #     return [li.get_attribute("textContent").strip() for li in alert.find_elements_by_tag_name("li")]
-    #
-    # @keyword
-    # def is_error_message(self, error_message):
-    #     messages = self.get_login_alert_messages()
-    #     if error_message in messages:
-    #         pass
-    #     else:
-    #         raise AssertionError("Message '{}' is not found".format(error_message))

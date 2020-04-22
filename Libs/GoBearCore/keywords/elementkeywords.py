@@ -2,6 +2,7 @@ from SeleniumLibrary.base import keyword, LibraryComponent
 from SeleniumLibrary.keywords import ElementKeywords as SeleniumElementKeywords
 from selenium.webdriver.common.keys import Keys
 from SeleniumLibrary.keywords import WaitingKeywords
+from ..extended import ExtWebElement
 
 
 class ElementKeywords(LibraryComponent):
@@ -25,7 +26,7 @@ class ElementKeywords(LibraryComponent):
         child_elements = element.find_elements_by_tag_name(tag)
         for child in child_elements:
             if child.get_attribute(attribute_name).strip() == attribute_value:
-                return child
+                return ExtWebElement(child)
         message = "Child element '%s = %s' not found!" % (attribute_name, attribute_value)
         raise AssertionError(message)
 
@@ -35,37 +36,20 @@ class ElementKeywords(LibraryComponent):
 
     @keyword
     def get_elements_by_attribute(self, attribute, value, tag='*'):
-        return self.SEKeywords.find_elements("//" + tag + "[@" + attribute + "='" + value + "']")
-
-    def get_elements_by_tag(self, element, tag):
-        return self.find_element(element).find_elements_by_tag_name(tag)
-
-    def select_element_by_tag(self, element, tag, value):
-        for e in self.get_elements_by_tag(element, tag):
-            if value in e.get_textContent():
-                e.click()
-                return
-        message = "Element '%s = %s' not found!" % (tag, value)
-        raise AssertionError(message)
-
-    def is_contain_class(self, locator, class_name):
-        return class_name in self.find_element(locator).get_attribute('class')
+        return [ExtWebElement(e) for e in self.SEKeywords.find_elements("//" + tag + "[@" + attribute + "='" + value + "']")]
 
     def is_element_contain_class(self, class_name, element=None):
         return class_name in element.get_attribute('class')
 
-    def is_child_element_contain_class(self, class_name, element=None):
+    def is_any_element_contain_class(self, class_name, element=None):
         try:
-            self.get_element_by_class(class_name, element)
+            self.find_element_by_class(class_name, element)
             return True
         except:
             return False
 
-    def get_element_by_class(self, class_name, element=None):
-        return self.find_element("//*[contains(@class, '"+class_name+"')]", None, None, element)
+    def find_element_by_class(self, class_name, element=None):
+        return ExtWebElement(self.find_element("//*[contains(@class, '"+class_name+"')]", None, None, element))
 
     def get_element_by_href(self, value):
-        return self.get_element_by_attribute("href", value, tag='a')
-
-    def get_element_contains_text(self, locator, value, tag='*'):
-        return self.find_element("//"+tag+"[contains(text(),'"+value+"')]", None, None, locator)
+        return ExtWebElement(self.get_element_by_attribute("href", value, tag='a'))
