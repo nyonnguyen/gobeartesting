@@ -5,6 +5,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 SLIDER_SLIDER_HANDLE_MIN = 'slider-handle min-slider-handle round'
 SLIDER_SLIDER_HANDLE_MAX = 'slider-handle max-slider-handle round'
 SLIDER_SLIDER_SELECTION_BAR = 'slider-selection'
+SLIDER_SLIDER_MAX_VALUE = 'pull-right value'
+SLIDER_SLIDER_VALUE_ATTRIBUTE = 'data-max-value'
 
 
 class GBSliderGroup(ExtWebElement):
@@ -26,7 +28,9 @@ class GBSliderGroup(ExtWebElement):
 class GBSlider(ExtWebElement):
     def __init__(self, we):
         ExtWebElement.__init__(self, we)
-        self.max_value = 3000000
+
+    def get_max_value(self):
+        return int(self.get_element_contains_class(SLIDER_SLIDER_MAX_VALUE).get_attribute(SLIDER_SLIDER_VALUE_ATTRIBUTE))
 
     def get_min_handle(self):
         return self.get_element_contains_class(SLIDER_SLIDER_HANDLE_MIN)
@@ -42,5 +46,10 @@ class GBSlider(ExtWebElement):
 
     def set_min_value(self, value):
         action = ActionChains(self.parent)
-        distance = value*(self.get_selection_bar_width())/self.max_value
-        action.click_and_hold(self.get_min_handle()).move_by_offset(distance).release().perform()
+        distance = int(value)*(self.get_selection_bar_width())/self.get_max_value()
+        action.click_and_hold(self.get_min_handle()).move_by_offset(distance, 0).release().perform()
+
+    def set_max_value(self, value):
+        action = ActionChains(self.parent)
+        distance = int(value)*(self.get_selection_bar_width())/self.get_max_value()
+        action.click_and_hold(self.get_max_handle()).move_by_offset(-distance, 0).release().perform()

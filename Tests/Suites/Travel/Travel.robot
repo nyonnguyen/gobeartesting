@@ -18,7 +18,8 @@ User Can Navigate To Travel Tab
     Set Travel From Place  Asia
     Set Travel Start Date  12-December-2026
     Click Travel Show Result Button
-    sleep  5
 
+    User Should See Travel Result Page
     User Expand The Filter Options
-    User Set Min Slider Personal Accident On Filter  12345
+    User Set Min Slider Personal Accident On Filter  1567800
+    User Set Max Slider Trip Cancellation  50000

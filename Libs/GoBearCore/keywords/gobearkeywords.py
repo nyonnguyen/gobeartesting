@@ -8,7 +8,7 @@ import time
 __version__ = '1.0.0'
 
 GB_ATTRIBUTE_NAME = 'data-gb-name'
-GB_LOADING = 'gb-name=loading-status'
+GB_LOADING_LOCATOR = 'data-gb-name=loading-status'
 BG_DROPDOWN_MENU_OPEN = 'dropdown-menu open'
 
 GB_DATE_PICKER_MENU_CLASS = 'datepicker datepicker-dropdown dropdown-menu datepicker-orient-left datepicker-orient-top'
@@ -53,12 +53,15 @@ class GoBearCoreKeywords(LibraryComponent):
     def select_gb_element(self, locator):
         self.find_element(locator).click()
 
-    def is_loading(self, locator=GB_ATTRIBUTE_NAME):
-        loader = self.get_element(locator)
-        return loader.is_displayed()
+    def is_loading(self, locator=GB_LOADING_LOCATOR):
+        try:
+            return self.get_element(locator).is_displayed()
+        except:
+            return False
 
     @keyword
     def wait_until_loaded(self, timeout=None, error=None):
+        # time.sleep(5)
         self.waiting_management._wait_until(
             lambda: self.is_loading() == False,
             "Web is loading too long '<TIMEOUT>'",
@@ -121,6 +124,11 @@ class GoBearCoreKeywords(LibraryComponent):
     def set_min_slider(self, locator, name_slider, value):
         slider = GBSlider(self.get_slider(locator, name_slider))
         slider.set_min_value(value)
+
+    @keyword
+    def set_max_slider(self, locator, name_slider, value):
+        slider = GBSlider(self.get_slider(locator, name_slider))
+        slider.set_max_value(value)
 
     def get_slider(self, locator, name_slider):
         slider_group = GBSliderGroup(self.get_element(locator))

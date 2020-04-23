@@ -22,8 +22,18 @@ class ExtWebElement(WebElement):
     def get_element_contains_text(self, value, tag='*'):
         return ExtWebElement(self.find_element("//"+tag+"[contains(text(),'"+value+"')]"))
 
-    def get_element_contains_class(self, class_name, tag='*'):
-        return ExtWebElement(self.find_element("//"+tag+"[contains(@class,'"+class_name+"')]"))
+    # def get_element_contains_class(self, class_name, tag='*'):
+    #     return ExtWebElement(self.find_element_by_xpath("//"+tag+"[contains(@class,'"+class_name+"')]"))
+
+    def get_element_contains_class(self, class_names, tag='*'):
+        """
+        Get child elements which contain class names
+        :param class_names: class names separated by space " ", ex: "class1 class2 class3"
+        :param tag:
+        :return: ExtWebElement
+        """
+        c_names = "." + class_names.replace(' ', '.')
+        return ExtWebElement(self.find_element_by_css_selector(c_names))
 
     def get_element_by_tag(self, tag='*'):
         return ExtWebElement(self.get_elements_by_tag(tag)[0])
@@ -65,3 +75,4 @@ class ExtWebElement(WebElement):
         if dimention =='height':
             return self.parent.execute_script("return arguments[0].offsetWidth;", self)
         return
+

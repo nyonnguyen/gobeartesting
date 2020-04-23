@@ -36,7 +36,8 @@ class ElementKeywords(LibraryComponent):
 
     @keyword
     def get_elements_by_attribute(self, attribute, value, tag='*'):
-        return [ExtWebElement(e) for e in self.SEKeywords.find_elements("//" + tag + "[@" + attribute + "='" + value + "']")]
+        return [ExtWebElement(e) for e in self.SEKeywords.find_elements("//" + tag + "[@" +
+                                                                        attribute + "='" + value + "']")]
 
     def is_element_contain_class(self, class_name, element=None):
         return class_name in element.get_attribute('class')

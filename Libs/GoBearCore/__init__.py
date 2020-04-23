@@ -15,7 +15,7 @@ class GoBearCore(SeleniumLibrary):
         ####################################################################################
         # Make sure pydevd installed: pip install pydevd
         # AND Uncomment following codes to enable debug mode
-        sys.path.append("pydevd-pycharm.egg")
-        import pydevd
-        pydevd.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True)
+        # sys.path.append("pydevd-pycharm.egg")
+        # import pydevd
+        # pydevd.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True)
         ####################################################################################
