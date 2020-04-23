@@ -2,7 +2,7 @@ from SeleniumLibrary.base import keyword, LibraryComponent
 from SeleniumLibrary.keywords import WaitingKeywords
 from .elementkeywords import ElementKeywords
 from ..utilities import Utilities as GBUtilies
-from ..extended import ExtWebElement
+from ..extended import *
 import time
 
 __version__ = '1.0.0'
@@ -114,6 +114,17 @@ class GoBearCoreKeywords(LibraryComponent):
         #     timeout,
         #     error
         # )
+
+#################### SLIDER ##########################
+
+    @keyword
+    def set_min_slider(self, locator, name_slider, value):
+        slider = GBSlider(self.get_slider(locator, name_slider))
+        slider.set_min_value(value)
+
+    def get_slider(self, locator, name_slider):
+        slider_group = GBSliderGroup(self.get_element(locator))
+        return slider_group.get_slider_by_label(name_slider)
 
 #################### DATE PICKER ##########################
 

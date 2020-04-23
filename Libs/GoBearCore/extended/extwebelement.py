@@ -3,7 +3,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class ExtWebElement(WebElement):
     def __init__(self, we):
-        WebElement.__init__(self, we.parent, we.id)
+        WebElement.__init__(self, we.parent, we.id, True)
 
     def js_click(self):
         """
@@ -20,10 +20,13 @@ class ExtWebElement(WebElement):
         return self.get_attribute("textContent").strip()
 
     def get_element_contains_text(self, value, tag='*'):
-        return self.find_element("//"+tag+"[contains(text(),'"+value+"')]")
+        return ExtWebElement(self.find_element("//"+tag+"[contains(text(),'"+value+"')]"))
+
+    def get_element_contains_class(self, class_name, tag='*'):
+        return ExtWebElement(self.find_element("//"+tag+"[contains(@class,'"+class_name+"')]"))
 
     def get_element_by_tag(self, tag='*'):
-        return self.get_elements_by_tag(tag)[0]
+        return ExtWebElement(self.get_elements_by_tag(tag)[0])
 
     def get_elements_by_tag(self, tag='*'):
         return [ExtWebElement(e) for e in self.find_elements_by_tag_name(tag)]
@@ -41,3 +44,24 @@ class ExtWebElement(WebElement):
 
     def get_element_by_class(self, class_name):
         return ExtWebElement(self.find_element_by_css_selector("."+class_name))
+
+    def get_following_neighbor(self):
+        try:
+            return ExtWebElement(self.parent.execute_script("return arguments[0].nextElementSibling;", self))
+        except:
+            message = "Following-neighbor not found"
+            raise AssertionError(message)
+
+    def get_preceding_neighbor(self):
+        try:
+            return ExtWebElement(self.parent.execute_script("return arguments[0].previousSibling;", self))
+        except:
+            message = "Preceding-neighbor not found"
+            raise AssertionError(message)
+
+    def get_offset(self, dimention):
+        if dimention == 'width':
+            return self.parent.execute_script("return arguments[0].offsetWidth;", self)
+        if dimention =='height':
+            return self.parent.execute_script("return arguments[0].offsetWidth;", self)
+        return

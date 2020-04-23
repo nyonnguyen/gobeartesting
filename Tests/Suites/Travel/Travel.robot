@@ -1,6 +1,7 @@
 *** Settings ***
 Library           GoBearCore
 Resource          ../Pages/Travel/Travel_Page.robot
+Resource          ../Pages/TravelResult/TravelResult_Page.robot
 Resource          ../Tests/Base_Test.robot
 
 Suite Setup       User Prepare The Test Environment
@@ -18,3 +19,6 @@ User Can Navigate To Travel Tab
     Set Travel Start Date  12-December-2026
     Click Travel Show Result Button
     sleep  5
+
+    User Expand The Filter Options
+    User Set Min Slider Personal Accident On Filter  12345

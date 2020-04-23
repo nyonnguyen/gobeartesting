@@ -1,14 +1,18 @@
 *** Variables ***
-#Locators
 
-${TRAVEL_PANEL}         id=travel
-${TRAVEL_TRIP_TYPE}     data-gb-name=trip-type
-${TRAVEL_TRAVELLER}     data-gb-name=traveller
-${TRAVEL_FROM_PLACE}    data-gb-name=travel-form-country
-${TRAVEL_STARTDATE}     name=startdate
-${TRAVEL_ENDDATE}       name=enddate
-${TRAVEL_SHOW_RESULT}   name=product-form-submit
-${TRAVEL_RESET_FORM}    name=product-form-reset
+# Main
+${TRAVEL_RESULT_NAV_DATA}           data-gb-name=travel-nav-data
+${TRAVEL_RESULT_VALIDATE_FORMAT}    <count_result> plans found <trip_type> | for <traveller> | travel to <place> | from <date>
+
+# Sidebar
+${TRAVEL_RESULT_SB_FILTER}                  data-gb-name=filter-bar
+${TRAVEL_RESULT_SB_FILTER_OPTIONS}          data-gb-name=filter-option
+${TRAVEL_RESULT_DB_FILTER_COLLAPSE}         id=collapseSeemore
+${TRAVEL_RESULT_DB_FILTER_COLLAPSE_BUTTON}  id=collapseSeemoreBtn
+
+# Search Result
+${TRAVEL_RESULT_LIST}               id=travel-quote-list
+
 
 #Variables
 
