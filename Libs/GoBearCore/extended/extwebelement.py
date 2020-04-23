@@ -76,3 +76,5 @@ class ExtWebElement(WebElement):
             return self.parent.execute_script("return arguments[0].offsetWidth;", self)
         return
 
+    def find_elements_by_attribute(self, attribute, value):
+        return self.find_elements_by_css_selector("*["+attribute+"='"+value+"']")

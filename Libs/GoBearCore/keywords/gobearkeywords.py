@@ -21,6 +21,8 @@ GB_DATE_PICKER_SWITCH_CLASS = 'datepicker-switch'
 GB_DATE_PICKER_NEXT_CLASS = 'next'
 GB_DATE_PICKER_PREV_CLASS = 'prev'
 
+GB_FILTER_OPTION = 'filter-option'
+
 
 class GoBearCoreKeywords(LibraryComponent):
 
@@ -117,6 +119,21 @@ class GoBearCoreKeywords(LibraryComponent):
         #     timeout,
         #     error
         # )
+
+################## FILTER OPTIONS ####################
+
+    def get_filter_options(self, locator):
+        filter_section = self.get_element(locator)
+        return filter_section.find_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_FILTER_OPTION)
+
+    @keyword
+    def select_filter_option(self, locator, option):
+        for f in self.get_filter_options(locator):
+            if f.get_textContent().lower() == option.lower():
+                f.click()
+                return
+        message = "Filter option '%s' not found in '%s'" % (option, locator)
+        raise AssertionError(message)
 
 #################### SLIDER ##########################
 

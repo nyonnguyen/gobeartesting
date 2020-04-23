@@ -7,7 +7,8 @@ ${TRAVEL_RESULT_VALIDATE_FORMAT}    <count_result> plans found <trip_type> | for
 # Sidebar
 ${TRAVEL_RESULT_SB_FILTER}                  data-gb-name=filter-bar
 ${TRAVEL_RESULT_SB_FILTER_OPTIONS}          data-gb-name=filter-option
-${TRAVEL_RESULT_DB_FILTER_COLLAPSE}         id=collapseSeemore
+${TRAVEL_RESULT_DB_FILTER_COLLAPSE}         id=collapseFilter
+${TRAVEL_RESULT_DB_FILTER_COLLAPSE_MORE}    id=collapseSeemore
 ${TRAVEL_RESULT_DB_FILTER_COLLAPSE_BUTTON}  id=collapseSeemoreBtn
 
 # Search Result

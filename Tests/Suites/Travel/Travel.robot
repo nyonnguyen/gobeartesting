@@ -21,5 +21,6 @@ User Can Navigate To Travel Tab
 
     User Should See Travel Result Page
     User Expand The Filter Options
-    User Set Min Slider Personal Accident On Filter  1567800
+    User Click On Filter Option  Pacific Cross
+    User Set Min Slider Personal Accident On Filter  1500000
     User Set Max Slider Trip Cancellation  50000

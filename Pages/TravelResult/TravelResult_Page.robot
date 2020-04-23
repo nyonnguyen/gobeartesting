@@ -16,3 +16,8 @@ User Set Max Slider Trip Cancellation
 
 User Expand The Filter Options
     Expand More Filter Options
+
+User Click On Filter Option
+    [Arguments]  ${option}
+    Click On Filter Option  ${option}
+    Wait Until Loaded
