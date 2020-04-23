@@ -1,6 +1,6 @@
 *** Settings ***
 Library           GoBearCore
-Resource          ../Pages/Insurance/Travel/Travel_Page.robot
+Resource          ../Pages/Travel/Travel_Page.robot
 Resource          ../Tests/Base_Test.robot
 
 Suite Setup       User Prepare The Test Environment
