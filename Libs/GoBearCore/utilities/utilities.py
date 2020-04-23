@@ -39,6 +39,6 @@ class Utilities:
 
     def month_lname_to_sname(lname):
         try:
-            return MONTH_SHORT_NAMES[MONTH_LONG_NAMES.index[lname]]
+            return MONTH_SHORT_NAMES[MONTH_LONG_NAMES.index(lname.lower())].title()
         except:
             return lname

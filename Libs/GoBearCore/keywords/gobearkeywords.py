@@ -205,19 +205,20 @@ class GoBearCoreKeywords(LibraryComponent):
         self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, day)
 
     def select_datepicker_value(self, datepicker, picker_class, value):
+        tmp = value
         current_date_picker = datepicker.get_element_by_class(picker_class)
         if picker_class == GB_DATE_PICKER_DAYS_CLASS:
             values = current_date_picker.find_elements_by_xpath("//tbody//td")
         else:
             values = current_date_picker.find_elements_by_xpath("//tbody//td/span")
-        available_values = [v for v in values if not self.elementKeys.is_element_contain_class('disabled', v)]
-        for v in available_values:
             if picker_class == GB_DATE_PICKER_MONTHS_CLASS:
                 value = GBUtilies.month_lname_to_sname(value)
+        available_values = [v for v in values if not self.elementKeys.is_element_contain_class('disabled', v)]
+        for v in available_values:
             if v.get_textContent() == value:
                 v.click()
                 return
-        message = "Cannot select value %s" % value
+        message = "Cannot select value %s" % tmp
         raise AssertionError(message)
 
     def click_date_picker_switch(self, times=1):
