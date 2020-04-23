@@ -4,6 +4,9 @@ import calendar
 MONTH_LONG_NAMES = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
                'august', 'september', 'october', 'november', 'december']
 
+MONTH_SHORT_NAMES = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+               'aug', 'sep', 'oct', 'nov', 'dec']
+
 
 class Utilities:
 
@@ -22,8 +25,20 @@ class Utilities:
         except:
             return -1
 
-    def month_num_to_name(num):
+    def month_num_to_sname(num):
+        try:
+            return MONTH_SHORT_NAMES[num - 1].title()
+        except:
+            return
+
+    def month_num_to_lname(num):
         try:
             return MONTH_LONG_NAMES[num - 1].title()
         except:
             return
+
+    def month_lname_to_sname(lname):
+        try:
+            return MONTH_SHORT_NAMES[MONTH_LONG_NAMES.index[lname]]
+        except:
+            return lname

@@ -115,6 +115,8 @@ class GoBearCoreKeywords(LibraryComponent):
         #     error
         # )
 
+#################### DATE PICKER ##########################
+
     @keyword
     def set_date(self, locator, value):
         """
@@ -152,13 +154,15 @@ class GoBearCoreKeywords(LibraryComponent):
                 # current_month == month and current_year == year
                 self.select_datepicker_day_at(date_picker, day, month, year, _position)
 
-        if self.is_date_picker_months():
-            _position = 1
+        # TODO: Add more cases when Date Picker is at Month screen when popup
+        # if self.is_date_picker_months():
+        #     _position = 1
             # get month popup
             # current_date_picker = date_picker.get_element_by_class(GB_DATE_PICKER_MONTHS_CLASS)
 
-        if self.is_date_picker_years():
-            _position = 2
+        # TODO: Add more cases when Date Picker is at Year screen when popup
+        # if self.is_date_picker_years():
+        #     _position = 2
             # get years popup
             # current_date_picker = date_picker.get_element_by_class(GB_DATE_PICKER_YEARS_CLASS)
 
@@ -208,6 +212,8 @@ class GoBearCoreKeywords(LibraryComponent):
             values = current_date_picker.find_elements_by_xpath("//tbody//td/span")
         available_values = [v for v in values if not self.elementKeys.is_element_contain_class('disabled', v)]
         for v in available_values:
+            if picker_class == GB_DATE_PICKER_MONTHS_CLASS:
+                value = GBUtilies.month_lname_to_sname(value)
             if v.get_textContent() == value:
                 v.click()
                 return

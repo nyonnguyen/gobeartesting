@@ -15,6 +15,6 @@ User Can Navigate To Travel Tab
     Set Trip Type  annual trip
     Set Traveller  5 persons
     Set Travel From Place  Asia
-    Set Travel Start Date  10-May-2024
+    Set Travel Start Date  12-Jun-2024
     Click Travel Show Result Button
     sleep  5
