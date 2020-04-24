@@ -22,6 +22,7 @@ GB_DATE_PICKER_NEXT_CLASS = 'next'
 GB_DATE_PICKER_PREV_CLASS = 'prev'
 
 GB_FILTER_OPTION = 'filter-option'
+GB_SORT_OPTION = 'sort-option'
 
 
 class GoBearCoreKeywords(LibraryComponent):
@@ -127,6 +128,37 @@ class GoBearCoreKeywords(LibraryComponent):
             message = "'%s' not equal '%s'" % (expected_string, actual_string)
             raise AssertionError(message)
         pass
+
+################## DETAILS OPTIONS ####################
+
+    def get_detail_options(self, locator):
+        sort_section = self.get_element(locator)
+        return sort_section.find_elements_by_tag_name('label')
+
+    @keyword
+    def select_detail_option(self, locator, option):
+        for f in self.get_detail_options(locator):
+            if f.get_textContent().lower() == option.lower():
+                f.click()
+                return
+        message = "Detail option '%s' not found in '%s'" % (option, locator)
+        raise AssertionError(message)
+
+
+################## SORT OPTIONS ####################
+
+    def get_sort_options(self, locator):
+        sort_section = self.get_element(locator)
+        return sort_section.find_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_SORT_OPTION)
+
+    @keyword
+    def select_sort_option(self, locator, option):
+        for f in self.get_sort_options(locator):
+            if f.get_textContent().lower() == option.lower():
+                f.click()
+                return
+        message = "Sort option '%s' not found in '%s'" % (option, locator)
+        raise AssertionError(message)
 
 ################## FILTER OPTIONS ####################
 

@@ -24,6 +24,6 @@ User Cleanup The Test Environment
   Capture Page Screenshot
   Close Browser
 
-#User Cleanup Test Case
-#  Capture Page Screenshot
+User Cleanup Test Case
+  Capture Page Screenshot
 
