@@ -21,3 +21,6 @@ User Click On Filter Option
     [Arguments]  ${option}
     Click On Filter Option  ${option}
     Wait Until Loaded
+
+The '${count_result} plans found ${trip_type} | for ${traveller} | travel to ${place} | from ${date}' Should Be Displayed
+    Top Nav Should Match  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${date}

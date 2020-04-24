@@ -15,9 +15,11 @@ class Utilities:
         return _locator[0], _locator[1]
 
     def split(input, separators):
-        for s in separators[1:]:
-            new_value = input.replace(s, separators[0])
-        return [v.strip() for v in new_value.split(separators[0])]
+        def_sep = separators[0]
+        for s in separators:
+            if s in input:
+                new_value = input.replace(s, def_sep)
+        return [v.strip() for v in new_value.split(def_sep)]
 
     def month_name_to_num(name):
         try:

@@ -120,6 +120,14 @@ class GoBearCoreKeywords(LibraryComponent):
         #     error
         # )
 
+    @keyword
+    def text_should_be_equal(self, locator, expected_string):
+        actual_string = self.get_element(locator).get_textContent()
+        if actual_string != expected_string:
+            message = "'%s' not equal '%s'" % (expected_string, actual_string)
+            raise AssertionError(message)
+        pass
+
 ################## FILTER OPTIONS ####################
 
     def get_filter_options(self, locator):

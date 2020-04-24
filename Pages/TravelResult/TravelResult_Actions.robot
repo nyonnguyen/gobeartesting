@@ -38,3 +38,8 @@ Set Max Slider Trip Cancellation
     [Arguments]  ${value}
     Set Max Slider  ${TRAVEL_RESULT_DB_FILTER_COLLAPSE_MORE}  Trip Cancellation  ${value}
     Wait Until Loaded
+
+Top Nav Should Match
+    [Arguments]  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${date}
+    ${expected_string}  Format String  ${TRAVEL_RESULT_VALIDATE_FORMAT}  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${date}
+    Text Should Be Equal  ${TRAVEL_RESULT_NAV_DATA}  ${expected_string}

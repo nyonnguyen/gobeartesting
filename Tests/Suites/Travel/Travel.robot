@@ -16,10 +16,13 @@ User Can Navigate To Travel Tab
     Set Trip Type  annual trip
     Set Traveller  5 persons
     Set Travel From Place  Asia
-    Set Travel Start Date  12-December-2026
+    Set Travel Start Date  12 Dec 2026
     Click Travel Show Result Button
 
     User Should See Travel Result Page
+
+    The '12 plans found annual trip | for 5 persons | travel to Asia | from 12 Dec 2026' Should Be Displayed
+
     User Expand The Filter Options
     User Click On Filter Option  Pacific Cross
     User Set Min Slider Personal Accident On Filter  1500000

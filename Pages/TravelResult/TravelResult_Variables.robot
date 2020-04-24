@@ -2,7 +2,7 @@
 
 # Main
 ${TRAVEL_RESULT_NAV_DATA}           data-gb-name=travel-nav-data
-${TRAVEL_RESULT_VALIDATE_FORMAT}    <count_result> plans found <trip_type> | for <traveller> | travel to <place> | from <date>
+${TRAVEL_RESULT_VALIDATE_FORMAT}    {} plans found {} | for {} | travel to {} | from {}
 
 # Sidebar
 ${TRAVEL_RESULT_SB_FILTER}                  data-gb-name=filter-bar
