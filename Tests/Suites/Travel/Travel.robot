@@ -28,7 +28,7 @@ User Can Filter Travel Insurance
     And User Select Filter Option  Pacific Cross
     And User Set Min Slider Personal Accident On Filter  1500000
     And User Set Max Slider Trip Cancellation  50000
-    Then Another '6 plans found single trip | for me | travel to Hong Kong | from 01 May 2020 to 10 May 2020' Should Be Displayed
+    Then '3 Travel Cards Should Be Found At Least
 
 User Can Set Detail Travel Insurance At Travel Result Page
     [Tags]  test3
@@ -39,8 +39,7 @@ User Can Set Detail Travel Insurance At Travel Result Page
     And User Select Filter Destination  Singapore
     And User Set Filter Start Date  30 April 2020
     And User Set Filter End Date  7 May 2020
-    Then Another '22 plans found single trip | for 3 persons | travel to Singapore | from 30 Apr 2020 to 07 May 2020' Should Be Displayed
-
+    Then '100 Travel Cards Should Be Found
 
 *** Keywords ***
 

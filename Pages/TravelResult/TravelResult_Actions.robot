@@ -81,3 +81,11 @@ Top Nav Should Match With End Date
     [Arguments]  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${startdate}  ${enddate}
     ${expected_string}  Format String  ${TRAVEL_RESULT_VALIDATE_WITH_DATE_FORMAT}  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${startdate}  ${enddate}
     Text Should Be Equal  ${TRAVEL_RESULT_NAV_DATA}  ${expected_string}
+
+Number Found Travel Cards Should Be Matched
+    [Arguments]  ${expected_count}
+    Number Of Found Elements Should Be  ${TRAVEL_RESULT_PLAN}  ${expected_count}  Number Travel Cards is not matched
+
+Number Found Travel Cards Should At Least
+    [Arguments]  ${expected_count}
+    Number Of Found Elements Should At Least  ${TRAVEL_RESULT_PLAN}  ${expected_count}  Number Travel Cards is not matched

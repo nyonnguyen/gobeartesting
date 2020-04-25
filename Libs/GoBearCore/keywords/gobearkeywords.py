@@ -49,6 +49,26 @@ class GoBearCoreKeywords(LibraryComponent):
             return [ExtWebElement(e) for e in self.elementKeys.find_elements(locator, tag)]
 
     @keyword
+    def count_elements_found(self, locator):
+        return len(self.get_elements(locator))
+
+    @keyword
+    def number_of_found_elements_should_be(self, locator, num, message=None):
+        count = self.count_elements_found(locator)
+        if count != int(num):
+            if not message:
+                message = "%s of element '%s' found instead of %s" % (count, locator, num)
+            raise AssertionError(message)
+
+    @keyword
+    def number_of_found_elements_should_at_least(self, locator, num, message=None):
+        count = self.count_elements_found(locator)
+        if count < int(num):
+            if not message:
+                message = "Only %s of element '%s' found instead of %s" % (count, locator, num)
+            raise AssertionError(message)
+
+    @keyword
     def select_element(self, locator):
         self.get_element(locator).click()
 

@@ -22,7 +22,7 @@ ${TRAVEL_RESULT_FILTER_END_DATE}            name=dates-enddate
 
 # Search Result
 ${TRAVEL_RESULT_LIST}               id=travel-quote-list
-
+${TRAVEL_RESULT_PLAN}               data-gb-name=travel-plan
 
 #Variables
 
