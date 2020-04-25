@@ -30,6 +30,7 @@ Set Travel End Date
     Set Date  ${TRAVEL_ENDDATE}  ${enddate}
 
 Click Travel Show Result Button
+    Wait Until Element Is Enabled  ${TRAVEL_SHOW_RESULT_BUTTON}
     Select Element  ${TRAVEL_SHOW_RESULT_BUTTON}
 
 Click Travel Reset Button

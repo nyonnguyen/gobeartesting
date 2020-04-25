@@ -222,6 +222,7 @@ class GoBearCoreKeywords(LibraryComponent):
             current_month = datepicker_switch_value['month'] or None
             current_year = datepicker_switch_value['year'] or None
 
+            # TODO: Add case for Decays, Centuries
             if current_year != year:
                 self.select_datepicker_year_at(date_picker, day, month, year, _position)
             elif current_month != month:
@@ -244,9 +245,11 @@ class GoBearCoreKeywords(LibraryComponent):
 
     def select_datepicker_year_at(self, datepicker, day, month, year, position=2):
         """
-        Select value for Year Date Picker
+        Select year value for DatePicker when standing at Year's popup
         :param datepicker:
-        :param year:
+        :param day: number from 1 - 31
+        :param month: month in names (Jan or January to Dec or December). Notes: Not support number at this version
+        :param year: year in format yyyy
         :param position: integer number | is where datepicker at
         0: for days, 1: for month, 2: for year
         """
@@ -278,7 +281,7 @@ class GoBearCoreKeywords(LibraryComponent):
             # at Year, select Year then Month
             self.select_datepicker_value(datepicker, GB_DATE_PICKER_YEARS_CLASS, year)
             self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, month)
-        self.select_datepicker_value(datepicker, GB_DATE_PICKER_MONTHS_CLASS, day)
+        self.select_datepicker_value(datepicker, GB_DATE_PICKER_DAYS_CLASS, day)
 
     def select_datepicker_value(self, datepicker, picker_class, value):
         tmp = value

@@ -1,4 +1,5 @@
-if [ -z "$var" ]
+#! /bin/bash
+if [ -z "$1" ]
 then
   robot -P ./Libs -d Results Tests
 else
