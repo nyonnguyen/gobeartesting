@@ -14,7 +14,7 @@ import shutil
 import xlrd
 import csv
 import socket
-import re
+import platform
 from os import walk
 from ..utilities import Utilities
 
@@ -40,8 +40,12 @@ def format_os_path(path):
 
 
 def format_executable_path(path):
-    if os.name == 'nt':
-        path = path if ".exe" in path else path + ".exe"
+    if platform.system() == 'Linux':
+        path = path + "-linux"
+    if platform.system() == 'Darwin':
+        path = path + "-mac"
+    if platform.system() == 'Windows':
+        path = path + "-win.exe"
     return format_os_path(path)
 
 
@@ -72,6 +76,7 @@ class BrowserKeywords(LibraryComponent):
         LibraryComponent.__init__(self, ctx)
         self.waiting_management = WaitingKeywords(ctx)
         self.browser_management = BrowserManagementKeywords(ctx)
+        self.os = platform.system()
 
     @keyword
     def setup_browser_driver(self, settings):
@@ -89,9 +94,9 @@ class BrowserKeywords(LibraryComponent):
             arg2=value2
         """
         # init browsers
-        firefox = AosBrowser('firefox', 'ff', None, '/Webdrivers/firefoxdriver/geckodriver', False, None, None)
-        chrome = AosBrowser('chrome', 'gc', None, '/Webdrivers/chromedriver/chromedriver', False, None, None)
-        ie = AosBrowser('ie', 'ie', None, '/Webdrivers/iedriver/IEDriverServer', False, None, None)
+        firefox = MyBrowser('firefox', 'ff', None, '/Webdrivers/firefoxdriver/geckodriver', False, None, None)
+        chrome = MyBrowser('chrome', 'gc', None, '/Webdrivers/chromedriver/chromedriver', False, None, None)
+        ie = MyBrowser('ie', 'ie', None, '/Webdrivers/iedriver/IEDriverServer', False, None, None)
         _BROWSER_MAP = {'firefox': firefox,
                         'chrome': chrome,
                         'ie': ie}
@@ -311,7 +316,7 @@ class BrowserKeywords(LibraryComponent):
         return router_address
 
 
-class AosBrowser(object):
+class MyBrowser(object):
 
     def __init__(self, b_type, short_type, bin_path, driver_path, headless, window_size, args):
         self.b_type = b_type
@@ -426,7 +431,7 @@ class AosBrowser(object):
             driver = Chrome(executable_path=self.get_driver_path(), options=self.get_options())
             # This work-around to enable download mode in headless chrome
             # https://bugs.chromium.org/p/chromium/issues/detail?id=696481
-            # TODO: Check if the latest chromedriver update or not
+            # TODO: Check if the latest chromedriver-mac update or not
             enable_download_in_headless_chrome(driver, get_download_path())
         return driver
 

@@ -1,7 +1,7 @@
 BROWSER:
   TYPE: chrome
 #  BROWSER_BINARY_PATH: <path_name_of_browser_binary>
-#  BROWSER_DRIVER_PATH: /Users/nyon/automation/webdriver/chromedriver/chromedriver
+#  BROWSER_DRIVER_PATH: /Users/nyon/automation/webdriver/chromedriver-mac/chromedriver-mac
   HEADLESS: False
 #  WINDOW_SIZE: "1920,1080"  #Recommended 1920,1080
 #  BROWSER_ARGUMENTS:
@@ -10,6 +10,6 @@ BROWSER:
 
 WEB_URL: https://www.gobear.com/ph?x_session_type=UAT
 
-DEFAULT_USERNAME: ntnhon@gmail.com
-DEFAULT_PASSWORD: 12345678x@X
-USER_NAME: Nyon Nguyen
+#DEFAULT_USERNAME: ntnhon@gmail.com
+#DEFAULT_PASSWORD: 12345678x@X
+#USER_NAME: Nyon Nguyen
