@@ -3,7 +3,7 @@ Library     GoBearCore
 Library     String
 Resource  ../Utilities/Utils.robot
 Resource  ../Pages/Common/Common_Page.robot
-Variables  Data/settings.yaml
+Variables  ../settings.yaml
 
 *** Keywords ***
 User Open Browser And Go To Webview

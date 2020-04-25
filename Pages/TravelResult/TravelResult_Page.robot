@@ -50,11 +50,11 @@ User Set Filter End Date
 '${count_result} plans found ${trip_type} | for ${traveller} | travel to ${place} | from ${date}' Should Be Displayed
     Top Nav Should Match  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${date}
 
-Another '${count_result} plans found ${trip_type} | for ${traveller} | travel to ${place} | from ${startdate} to ${enddate}' Should Be Displayed
+Another ${count_result} plans found ${trip_type} | for ${traveller} | travel to ${place} | from ${startdate} to ${enddate} Should Be Displayed
     Top Nav Should Match With End Date  ${count_result}  ${trip_type}  ${traveller}  ${place}  ${startdate}  ${enddate}
 
-'${expected_count} Travel Cards Should Be Found
+'${expected_count} Travel Cards' Should Be Found
     Number Found Travel Cards Should Be Matched  ${expected_count}
 
-'${expected_count} Travel Cards Should Be Found At Least
+'${expected_count} Travel Cards' Should Be Found At Least
     Number Found Travel Cards Should At Least  ${expected_count}

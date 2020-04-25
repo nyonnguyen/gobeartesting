@@ -1,0 +1,21 @@
+TEST1:
+    TRIP_TYPE: "annual trip"
+    TRAVELER: "5 persons"
+    TRAVEL_PLACE: "Asia"
+    TRAVEL_DATE: "12 Dec 2026"
+    TRAVEL_RESULT: 12
+
+TEST2:
+    FILTER_OPTION: "Pacific Cross"
+    FILTER_ACCIDENT: "1500000"
+    FILTER_CANCELLATION: "50000"
+    TRAVEL_RESULT: 3
+
+TEST3:
+    FILTER_SORT: "Price: Low to high"
+    DETAIL_POLICY: "single trip"
+    DETAIL_TRAVELER: "3 persons"
+    FILTER_DESTINATION: "Singapore"
+    FILTER_START_DATE: "30 April 2020"
+    FILTER_END_DATE: "7 May 2020"
+    TRAVEL_RESULT: 100

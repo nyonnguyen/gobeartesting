@@ -1,4 +1,4 @@
-##REQUIREMENTS
+## REQUIREMENTS
 Make sure **Python 3** is installed on your system.<br>
 https://www.python.org/ftp/python/3.8.1/python-3.8.1.exe
 
