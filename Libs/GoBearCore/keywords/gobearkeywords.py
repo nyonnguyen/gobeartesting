@@ -35,16 +35,16 @@ class GoBearCoreKeywords(LibraryComponent):
     def get_element(self, locator, tag=None):
         _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
-            return self.elementKeys.get_element_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
+            return self.elementKeys.find_element_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
         if 'href' in _locator[0].lower():
-            return self.elementKeys.get_element_by_href(_locator[1])
+            return self.elementKeys.find_element_by_href(_locator[1])
         else:
             return ExtWebElement(self.elementKeys.find_element(locator, tag))
 
     def get_elements(self, locator, tag=None):
         _locator = GBUtilies.extract_locator(locator)
         if GB_ATTRIBUTE_NAME in _locator[0].lower():
-            return self.elementKeys.get_elements_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
+            return self.elementKeys.find_elements_by_attribute(GB_ATTRIBUTE_NAME, _locator[1])
         else:
             return [ExtWebElement(e) for e in self.elementKeys.find_elements(locator, tag)]
 
@@ -119,27 +119,29 @@ class GoBearCoreKeywords(LibraryComponent):
         control = self.get_element(locator)
         # show dropdown list
         control.get_elements_by_tag('button')[0].click()
-        self.wait_until_dropdown_menu_visible(control)
         # options are in 'li' tags
+        self.wait_until_dropdown_menu_visible(control, 'li')
         control.select_element_by_tag('li', value)
 
-    def is_dropdown_menu_visible(self, element):
+    def is_dropdown_menu_visible(self, element, tag):
         """
-        Check if the dropdown menu of BG Dropdown Button is visible
+        Check if the dropdown menu of BG Dropdown Button is visible and contains given TAGs
         :param element:
+        :param tag: tag of child elements
         """
-        return self.elementKeys.is_any_element_contain_class(BG_DROPDOWN_MENU_OPEN, element)
+        try:
+            element.get_element_by_class(BG_DROPDOWN_MENU_OPEN)
+            return len(element.get_children_by_tag(tag)) > 0
+        except:
+            return False
 
-    def wait_until_dropdown_menu_visible(self, control, timeout=None, error=None):
-        # constant wait time works better than dynamic function
-        # TODO: Need to debug and fix
-        time.sleep(0.5)
-        # self.waiting_management._wait_until(
-        #     lambda: self.is_dropdown_menu_visible(control) == True,
-        #     "No dropdown menu is visible <TIMEOUT>",
-        #     timeout,
-        #     error
-        # )
+    def wait_until_dropdown_menu_visible(self, control, tag=None, timeout=None, error=None):
+        self.waiting_management._wait_until(
+            lambda: self.is_dropdown_menu_visible(control, tag) == True,
+            "No dropdown menu is visible <TIMEOUT>",
+            timeout,
+            error
+        )
 
     @keyword
     def text_should_be_equal(self, locator, expected_string):
@@ -169,7 +171,7 @@ class GoBearCoreKeywords(LibraryComponent):
 
     def get_sort_options(self, locator):
         sort_section = self.get_element(locator)
-        return sort_section.find_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_SORT_OPTION)
+        return sort_section.get_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_SORT_OPTION)
 
     @keyword
     def select_sort_option(self, locator, option):
@@ -184,7 +186,7 @@ class GoBearCoreKeywords(LibraryComponent):
 
     def get_filter_options(self, locator):
         filter_section = self.get_element(locator)
-        return filter_section.find_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_FILTER_OPTION)
+        return filter_section.get_elements_by_attribute(GB_ATTRIBUTE_NAME, GB_FILTER_OPTION)
 
     @keyword
     def select_filter_option(self, locator, option):
@@ -307,12 +309,12 @@ class GoBearCoreKeywords(LibraryComponent):
         tmp = value
         current_date_picker = datepicker.get_element_by_class(picker_class)
         if picker_class == GB_DATE_PICKER_DAYS_CLASS:
-            values = current_date_picker.find_elements_by_xpath("//tbody//td")
+            values = current_date_picker.get_children_by_tag("td")
         else:
-            values = current_date_picker.find_elements_by_xpath("//tbody//td/span")
+            values = current_date_picker.get_children_by_tag("span")
             if picker_class == GB_DATE_PICKER_MONTHS_CLASS:
                 value = GBUtilies.month_lname_to_sname(value)
-        available_values = [v for v in values if not self.elementKeys.is_element_contain_class('disabled', v)]
+        available_values = [v for v in values if not v.is_contain_class('disabled')]
         for v in available_values:
             if v.get_textContent() == value:
                 v.click()

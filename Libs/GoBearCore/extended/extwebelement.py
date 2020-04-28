@@ -22,10 +22,7 @@ class ExtWebElement(WebElement):
     def get_element_contains_text(self, value, tag='*'):
         return ExtWebElement(self.find_element("//"+tag+"[contains(text(),'"+value+"')]"))
 
-    # def get_element_contains_class(self, class_name, tag='*'):
-    #     return ExtWebElement(self.find_element_by_xpath("//"+tag+"[contains(@class,'"+class_name+"')]"))
-
-    def get_element_contains_class(self, class_names, tag='*'):
+    def get_element_by_class(self, class_names, tag='*'):
         """
         Get child elements which contain class names
         :param class_names: class names separated by space " ", ex: "class1 class2 class3"
@@ -34,6 +31,16 @@ class ExtWebElement(WebElement):
         """
         c_names = "." + class_names.replace(' ', '.')
         return ExtWebElement(self.find_element_by_css_selector(c_names))
+
+    def get_elements_contain_class(self, class_names, tag='*'):
+        filtered_elements = []
+        elements = self.get_elements_by_tag()
+        for e in elements:
+            set_expect_cn = set(class_names.split())
+            set_exist_cn = set(e.get_attribute('class').split())
+            if set_expect_cn.issubset(set_exist_cn):
+                filtered_elements.append(e)
+        return filtered_elements
 
     def get_element_by_tag(self, tag='*'):
         return ExtWebElement(self.get_elements_by_tag(tag)[0])
@@ -51,9 +58,6 @@ class ExtWebElement(WebElement):
 
     def is_contain_class(self, class_name):
         return class_name in self.get_attribute('class')
-
-    def get_element_by_class(self, class_name):
-        return ExtWebElement(self.find_element_by_css_selector("."+class_name))
 
     def get_following_neighbor(self):
         try:
@@ -76,5 +80,10 @@ class ExtWebElement(WebElement):
             return self.parent.execute_script("return arguments[0].offsetWidth;", self)
         return
 
-    def find_elements_by_attribute(self, attribute, value):
+    def get_elements_by_attribute(self, attribute, value):
         return self.find_elements_by_css_selector("*["+attribute+"='"+value+"']")
+
+    def get_children_by_tag(self, tag):
+        elements = self.parent.execute_script("return arguments[0].getElementsByTagName('"+tag+"');", self)
+        return [ExtWebElement(e) for e in elements]
+

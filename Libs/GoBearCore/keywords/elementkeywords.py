@@ -22,7 +22,7 @@ class ElementKeywords(LibraryComponent):
             self.SEKeywords.press_key(locator, Keys.DELETE)
 
     @keyword
-    def get_child_element_by_tag_and_attribute(self, element, tag, attribute_name, attribute_value):
+    def find_child_element_by_tag_and_attribute(self, element, tag, attribute_name, attribute_value):
         child_elements = element.find_elements_by_tag_name(tag)
         for child in child_elements:
             if child.get_attribute(attribute_name).strip() == attribute_value:
@@ -31,16 +31,13 @@ class ElementKeywords(LibraryComponent):
         raise AssertionError(message)
 
     @keyword
-    def get_element_by_attribute(self, attribute, value, tag='*'):
-        return self.get_elements_by_attribute(attribute, value, tag)[0]
+    def find_element_by_attribute(self, attribute, value, tag='*'):
+        return self.find_elements_by_attribute(attribute, value, tag)[0]
 
     @keyword
-    def get_elements_by_attribute(self, attribute, value, tag='*'):
+    def find_elements_by_attribute(self, attribute, value, tag='*'):
         return [ExtWebElement(e) for e in self.SEKeywords.find_elements("//" + tag + "[@" +
                                                                         attribute + "='" + value + "']")]
-
-    def is_element_contain_class(self, class_name, element=None):
-        return class_name in element.get_attribute('class')
 
     def is_any_element_contain_class(self, class_name, element=None):
         try:
@@ -52,5 +49,5 @@ class ElementKeywords(LibraryComponent):
     def find_element_by_class(self, class_name, element=None):
         return ExtWebElement(self.find_element("//*[contains(@class, '"+class_name+"')]", None, None, element))
 
-    def get_element_by_href(self, value):
-        return ExtWebElement(self.get_element_by_attribute("href", value, tag='a'))
+    def find_element_by_href(self, value):
+        return ExtWebElement(self.find_element_by_attribute("href", value, tag='a'))
