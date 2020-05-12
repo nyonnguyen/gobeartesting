@@ -94,7 +94,8 @@ class GoBearCoreKeywords(LibraryComponent):
 
     def is_element_visible(self, locator):
         try:
-            self.get_element(locator)
+            e = self.get_element(locator)
+            print(e)
             return True
         except:
             return False

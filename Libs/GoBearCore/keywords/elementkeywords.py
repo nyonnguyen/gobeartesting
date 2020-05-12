@@ -32,7 +32,10 @@ class ElementKeywords(LibraryComponent):
 
     @keyword
     def find_element_by_attribute(self, attribute, value, tag='*'):
-        return self.find_elements_by_attribute(attribute, value, tag)[0]
+        # return self.find_elements_by_attribute(attribute, value, tag)[0]
+        e = self.find_elements_by_attribute(attribute, value, tag)[0]
+        print(e)
+        return e
 
     @keyword
     def find_elements_by_attribute(self, attribute, value, tag='*'):
